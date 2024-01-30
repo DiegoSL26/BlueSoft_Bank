@@ -1,0 +1,71 @@
+﻿@{
+    ViewData["Title"] = "Client Portal";
+}
+
+<script>
+    function getAccount() {
+        var accountNumber = $("#inputNumber").val();
+
+        if (accountNumber == "") {
+            document.getElementById('inputName').classList.add('is-invalid');
+            document.querySelector('.invalid-feedback').innerText = 'Please enter a valid account number';
+        } else {
+            var url = '@Url.Action("GetCuenta", "Home")';
+            var accountNumberInt = parseInt(accountNumber);
+            $.get(url, { id: accountNumberInt })
+                .done(function (account) {
+                    if (account === null) {
+                        alert('Account not found');
+                    } else {
+                        alert('Account balance: ' + account.saldo);
+                        document.getElementById('inputName').classList.remove('is-invalid');
+                        document.querySelector('.invalid-feedback').innerText = '';
+                    }
+                })
+        }
+    }
+</script>
+
+<div class="text-center container">
+    <form>
+        <label class="form-label" for="inputName">Por favor ingrese el número de cuenta</label>
+        <input class="form-control" type="text" id="inputNumber" required />
+        <span class="invalid-feedback"></span>
+        <button type="button" class="btn btn-primary mt-3" onclick='getAccount()'>Submit</button>
+    </form>
+    <h1 class="display-4">Welcome to your Portal!</h1>
+    <div class="p-3 row">
+        <div class="col">
+            <h2 class="mb-3">Account Balance</h2>
+            <p>$100,000.00</p>
+        </div>
+        <div class="col">
+            <h2 class="mb-3">Account Number</h2>
+            <p>123456789</p>
+        </div>
+    </div>
+    <div class="p-3 row">
+        <div class="col">
+            <h2 class="mb-3">Generate a extract</h2>
+            <form class="text-start row">
+                <div class="col">
+                    <select class="form-select" aria-label="Default select example" id="extractsMonth">
+                        <option name="Name" value="Default">Select the month of the extract</option>
+                        <option name="Name" value="Show">Show</option>
+                    </select>
+                </div>
+                <button type="button" class="btn btn-primary col-md-3">Generate</button>
+            </form>
+        </div>
+        <div class="col">
+            <h2 class="mb-3">Last Movements</h2>
+            <ul>
+                <li class="list-group-item">Deposit of $100,000.00 on 01/01/2024</li>
+                <li class="list-group-item">Deposit of $100,000.00 on 01/01/2024</li>
+                <li class="list-group-item">Deposit of $100,000.00 on 01/01/2024</li>
+                <li class="list-group-item">Deposit of $100,000.00 on 01/01/2024</li>
+                <li class="list-group-item">Deposit of $100,000.00 on 01/01/2024</li>
+            </ul>
+        </div>
+    </div>
+</div>

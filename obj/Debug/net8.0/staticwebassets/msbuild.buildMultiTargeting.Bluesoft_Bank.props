@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\Bluesoft_Bank.props" />
+</Project>
