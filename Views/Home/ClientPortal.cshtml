@@ -1,71 +1,133 @@
-﻿@{
+﻿@model Transaccion
+@{
     ViewData["Title"] = "Client Portal";
 }
 
 <script>
-    function getAccount() {
-        var accountNumber = $("#inputNumber").val();
 
-        if (accountNumber == "") {
-            document.getElementById('inputName').classList.add('is-invalid');
-            document.querySelector('.invalid-feedback').innerText = 'Please enter a valid account number';
-        } else {
+    function resetFields() {
+        var movementsList = document.getElementById('lastMovements');
+        let child = movementsList.lastElementChild;
+        while (child) {
+            movementsList.removeChild(child);
+            child = movementsList.lastElementChild;
+        }
+        const listItem = document.createElement("li");
+        listItem.classList.add("list-group-item");
+        listItem.append("No movements to show");
+        movementsList.appendChild(listItem);
+        document.getElementById('balance').innerText = "";
+        document.getElementById('accountNumber').innerText = "";
+    }
+
+    function fillAccountInfo() {
+        var accountNumber = accountSelector.value;
+        var movementsList = document.getElementById('lastMovements');
+        if (accountNumber != -1) {
             var url = '@Url.Action("GetCuenta", "Home")';
-            var accountNumberInt = parseInt(accountNumber);
-            $.get(url, { id: accountNumberInt })
+            $.get(url, { id: accountNumber })
                 .done(function (account) {
-                    if (account === null) {
-                        alert('Account not found');
-                    } else {
-                        alert('Account balance: ' + account.saldo);
-                        document.getElementById('inputName').classList.remove('is-invalid');
-                        document.querySelector('.invalid-feedback').innerText = '';
+                    document.getElementById('balance').innerText = "Balance: $" + parseFloat(account.saldo) + ".0";
+                    document.getElementById('accountNumber').innerText = "Account Number: " + account.id;
+                })
+            $.get('@Url.Action("GetMovimientos", "Home")', { id: accountNumber })
+                .done(function (transactions) {
+                    if (transactions.length !== 0) {
+                        movementsList.removeChild(movementsList.lastElementChild);
                     }
+                    transactions.forEach(transaction => {
+                        const listItem = document.createElement("li");
+                        listItem.classList.add("list-group-item");
+                        if (transaction.tipoTransaccion === "Retiro") {
+                            listItem.append("Withdrawal of $" + transaction.monto + " on " + transaction.fecha);
+                        } else if (transaction.tipoTransaccion === "Consignacion") {
+                            listItem.append("Deposit of $" + transaction.monto + " on " + transaction.fecha);
+                        }
+                        movementsList.appendChild(listItem);
+                    })
                 })
         }
     }
+
+    function getAccounts() {
+        var accountList = document.getElementById('accountSelector');
+        var url = '@Url.Action("GetCuentasFromClient", "Home")';
+        $.get(url, function (accounts) {
+            accounts.forEach(account => {
+                    const listItem = document.createElement("option");
+                    listItem.setAttribute("value", account.id);
+                    listItem.append("Cuenta " + account.tipoCuenta + ": #" + account.id);
+                    accountList.appendChild(listItem);
+                })
+            })
+    }
+
+    document.addEventListener("DOMContentLoaded", getAccounts)
+
+    document.addEventListener("DOMContentLoaded", function () {
+        fillAccountInfo();
+        var accountSelector = document.getElementById('accountSelector');
+        accountSelector.addEventListener('change', function () {
+            resetFields();
+            fillAccountInfo();
+        })
+    })
+
+    function generatePdf() {
+        var month = document.getElementById('month').value;
+        var accountNumber = accountSelector.value;
+        var url = '@Url.Action("MonthlyStatement", "Home")';
+        $.get(url, { id: accountNumber, date: month })
+        .done(function (pdf) {
+                html2pdf()
+                    .from(pdf)
+                    .save("Monthly Statement");
+        })
+    }
+
 </script>
 
 <div class="text-center container">
+    <h1 class="my-5 display-4">Welcome to your Portal!</h1>
     <form>
-        <label class="form-label" for="inputName">Por favor ingrese el número de cuenta</label>
-        <input class="form-control" type="text" id="inputNumber" required />
-        <span class="invalid-feedback"></span>
-        <button type="button" class="btn btn-primary mt-3" onclick='getAccount()'>Submit</button>
+        <label class="form-label" for="accountSelector">Please select the account to show it's information</label>
+        <select asp-for=CuentaId class="form-select" aria-label="Default select example" id="accountSelector" required>
+            <option value="">Select an Account</option>
+        </select>
     </form>
-    <h1 class="display-4">Welcome to your Portal!</h1>
-    <div class="p-3 row">
+
+    <div class="mt-5 p-3 row">
         <div class="col">
             <h2 class="mb-3">Account Balance</h2>
-            <p>$100,000.00</p>
+            <p id="balance"></p>
         </div>
         <div class="col">
             <h2 class="mb-3">Account Number</h2>
-            <p>123456789</p>
+            <p id="accountNumber"></p>
         </div>
     </div>
     <div class="p-3 row">
         <div class="col">
             <h2 class="mb-3">Generate a extract</h2>
             <form class="text-start row">
+                <label for="month" class="form-label">Select the month of the extract</label>
                 <div class="col">
-                    <select class="form-select" aria-label="Default select example" id="extractsMonth">
-                        <option name="Name" value="Default">Select the month of the extract</option>
-                        <option name="Name" value="Show">Show</option>
-                    </select>
+                    <input asp-for=Fecha type="month" class="form-control" id="month" name="month" required>
                 </div>
-                <button type="button" class="btn btn-primary col-md-3">Generate</button>
+                <button type="button" class="btn btn-primary col-md-3" onclick="generatePdf()">Generate</button>
             </form>
         </div>
         <div class="col">
             <h2 class="mb-3">Last Movements</h2>
-            <ul>
-                <li class="list-group-item">Deposit of $100,000.00 on 01/01/2024</li>
-                <li class="list-group-item">Deposit of $100,000.00 on 01/01/2024</li>
-                <li class="list-group-item">Deposit of $100,000.00 on 01/01/2024</li>
-                <li class="list-group-item">Deposit of $100,000.00 on 01/01/2024</li>
-                <li class="list-group-item">Deposit of $100,000.00 on 01/01/2024</li>
+            <ul id="lastMovements">
+                <li class="list-group-item">
+                    No movements to show
+                </li>
             </ul>
         </div>
     </div>
+
 </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js">
+</script>

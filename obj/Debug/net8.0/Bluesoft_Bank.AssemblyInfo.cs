@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Bluesoft_Bank")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8a53eb8f335e471906b486f2cb50a7f405dc3f19")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d4ad04934f886cae1a82a9405d20666483156c7f")]
 [assembly: System.Reflection.AssemblyProductAttribute("Bluesoft_Bank")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Bluesoft_Bank")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

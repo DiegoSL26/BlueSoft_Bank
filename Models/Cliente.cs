@@ -13,9 +13,7 @@ public partial class Cliente
 
     public string? TipoCliente { get; set; }
 
-    public int? TransaccionId { get; set; }
+    public virtual ICollection<Cuentum> Cuentas { get; set; } = new List<Cuentum>();
 
-    public virtual ICollection<Cuentum> Cuenta { get; set; } = new List<Cuentum>();
-
-    public virtual Transaccion? Transaccion { get; set; }
+    public virtual ICollection<Transaccion> Transacciones { get; set; } = new List<Transaccion>();
 }

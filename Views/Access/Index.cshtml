@@ -1,0 +1,57 @@
+﻿@model User
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+</head>
+<body class="overflow-hidden justify-content-center">
+    <div class="row mt-5">
+        <div class="col-sm-4 offset-sm-4">
+            <h2 class="display-4">Clients Portal</h2>
+            <form asp-controller="Access" asp-action="ClientLogin" method="post">
+                <div class="mb-3">
+                    <label for="idInputEmail" class="form-label">ID Number</label>
+                    <input asp-for="Id" type="text" class="form-control" id="idInputEmail" aria-describedby="idHelp" placeholder="Enter ID">
+                </div>
+                <button type="submit" class="btn btn-primary">Enter</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="row offset-sm-3 w-50 mt-5 text-center justify-content-center">
+        <div class="col">
+            <hr/>
+        </div>
+        <span class="col">or are you an Administrator?</span>
+        <div class="col">
+            <hr />
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-sm-4 offset-sm-4">
+            <form asp-controller="Access" asp-action="AdminLogin" method="post">
+                <h2 class="display-4">Administrator Portal</h2>
+                <div class="mb-3">
+                    <label for="exampleInputEmail" class="form-label">Email address</label>
+                    <input asp-for="Email" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+                </div>
+                <div class="mb-3">
+                    <label for="exampleInputPassword1" class="form-label">Password</label>
+                    <input asp-for="Password" type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                </div>
+                <button type="submit" class="btn btn-primary">Enter</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

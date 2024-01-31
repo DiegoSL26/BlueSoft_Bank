@@ -11,7 +11,15 @@ public partial class Transaccion
 
     public string CiudadOrigen { get; set; } = null!;
 
-    public virtual ICollection<Cliente> Clientes { get; set; } = new List<Cliente>();
+    public double Monto { get; set; }
 
-    public virtual ICollection<Cuentum> Cuenta { get; set; } = new List<Cuentum>();
+    public DateOnly Fecha { get; set; }
+
+    public int? CuentaId { get; set; }
+
+    public int? ClienteId { get; set; }
+
+    public virtual Cliente? Cliente { get; set; }
+
+    public virtual Cuentum? Cuenta { get; set; }
 }

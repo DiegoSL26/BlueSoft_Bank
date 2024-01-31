@@ -13,11 +13,9 @@ public partial class Cuentum
 
     public string Ciudad { get; set; } = null!;
 
-    public int? ClientId { get; set; }
+    public int? ClienteId { get; set; }
 
-    public int? TransaccionId { get; set; }
+    public virtual Cliente? Cliente { get; set; }
 
-    public virtual Cliente? Client { get; set; }
-
-    public virtual Transaccion? Transaccion { get; set; }
+    public virtual ICollection<Transaccion> Transaccions { get; set; } = new List<Transaccion>();
 }

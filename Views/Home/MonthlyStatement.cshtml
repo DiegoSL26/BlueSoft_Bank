@@ -1,0 +1,45 @@
+﻿@using System.Globalization
+@model List<Transaccion>
+@{
+    Layout = null;
+    ViewData["Title"] = "Monthly Statement";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+</head>
+<body class="overflow-hidden justify-content-center align-middle">
+
+    <div class="container mt-5">
+        <h2 class="text-center">Monthly Statement</h2>
+        <p class="text-center">Here's your statement for account #@Model.First().CuentaId in @CultureInfo.InvariantCulture.DateTimeFormat.GetMonthName(Model.First().Fecha.Month) of @Model.First().Fecha.Year.ToString()</p>
+        <p class="text-center">Client: @Model.First().Cliente?.Nombre @Model.First().Cliente?.Apellido</p>
+
+        <table class="table table-striped">
+            <thead>
+                <tr class="text-center">
+                    <th scope="col">Date</th>
+                    <th scope="col">Transaction type</th>
+                    <th scope="col">Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var transaction in Model)
+                {
+                    <tr class="text-center">
+                        <td>@transaction.Fecha</td>
+                        <td>@transaction.TipoTransaccion</td>
+                        <td>$@transaction.Monto</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
