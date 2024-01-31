@@ -23,4 +23,5 @@ Se usó ASP.Net MVC, SQL Server y Entity Framework, además fué desarrollado us
 
 ## Diagrama de clases con sus respectivas relaciones
 
-![image](https://github.com/DiegoSL26/BlueSoft_Bank/assets/64794509/3a4d71b0-5758-4700-9c04-e128d425d4d9)
+![image](https://github.com/DiegoSL26/BlueSoft_Bank/assets/64794509/94399248-1ff8-4c15-9aa2-a2c38309293c)
+
