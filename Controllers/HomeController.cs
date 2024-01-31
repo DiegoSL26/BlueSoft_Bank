@@ -31,7 +31,8 @@ namespace Bluesoft_Bank.Controllers
         {
             var transacciones = _context.Transaccions.Include(t => t.Cliente).ToList();
             var transaccionesFiltradas = transacciones.Where(t => t.CuentaId == id && t.Fecha.Month == date.Month && t.Fecha.Year == date.Year).ToList();
-            return View(transaccionesFiltradas);
+            var transaccionesOrdenadas = transaccionesFiltradas.OrderBy(t => t.Fecha).ToList();
+            return View(transaccionesOrdenadas);
         }
 
         [HttpGet]

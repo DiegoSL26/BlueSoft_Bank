@@ -22,7 +22,54 @@
         <table class="table table-striped">
             <thead>
                 <tr class="text-center">
+                    <th scope="col">Total depostis</th>
+                    <th scope="col">Total withdrawals</th>
+                    <th scope="col">Total balance</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="text-center">
+                    <td>$
+                        @{
+                            var totalDeposits = 0.0;
+                            foreach (var transaccion in Model)
+                            {
+                                if (transaccion.TipoTransaccion == "Consignacion")
+                                {
+                                    totalDeposits += transaccion.Monto;
+                                }
+                            }
+                            @totalDeposits
+                        }
+                    </td>
+                    <td>$
+                        @{
+                            var totalWithdrawals = 0.0;
+                            foreach (var transaccion in Model)
+                            {
+                                if (transaccion.TipoTransaccion == "Retiro")
+                                {
+                                    totalWithdrawals += transaccion.Monto;
+                                }
+                            }
+                            @totalWithdrawals
+                        }
+                    </td>
+                    <td>$
+                        @{
+                            var totalBalance = totalDeposits - totalWithdrawals;
+                            @totalBalance
+                        }
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="table table-striped">
+            <thead>
+                <tr class="text-center">
                     <th scope="col">Date</th>
+                    <th scope="col">City</th>
                     <th scope="col">Transaction type</th>
                     <th scope="col">Amount</th>
                 </tr>
@@ -32,8 +79,20 @@
                 {
                     <tr class="text-center">
                         <td>@transaction.Fecha</td>
+                        <td>@transaction.CiudadOrigen</td>
                         <td>@transaction.TipoTransaccion</td>
-                        <td>$@transaction.Monto</td>
+                        <td>$
+                           @{
+                                if (transaction.TipoTransaccion == "Consignacion")
+                                {
+                                    @transaction.Monto
+                                }
+                                else
+                                {
+                                    @(-transaction.Monto)
+                                }
+                            }
+                        </td>
                     </tr>
                 }
             </tbody>

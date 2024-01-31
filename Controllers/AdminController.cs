@@ -55,10 +55,27 @@ namespace Bluesoft_Bank.Controllers
         {
             var transacciones = _context.Transaccions.Include(t => t.Cuenta).Include(t => t.Cliente);
             var transaccionesFiltradasPorRetiro= transacciones.Where(t => t.TipoTransaccion == "Retiro").ToList();
-            var transaccionesFiltradasPorMonto = transaccionesFiltradasPorRetiro.Where(t => t.Monto > 1000000).ToList();
-            var transaccionesFiltradasPorCiudad = transaccionesFiltradasPorMonto.Where(t => t.Cuenta?.Ciudad != t.CiudadOrigen).ToList();
-            return Json(transaccionesFiltradasPorCiudad);
-        }
+            var transaccionesFiltradasPorCiudad = transaccionesFiltradasPorRetiro.Where(t => t.Cuenta?.Ciudad != t.CiudadOrigen).ToList();
+            var transaccionesPorClientes = transaccionesFiltradasPorCiudad.GroupBy(t => t.ClienteId).ToList();
+            var clientes = new List<object>();
+            foreach (var transaccion in transaccionesPorClientes)
+            {
+                var cliente = transaccion.First().Cliente;
+                var totalRetiros = transaccion.Sum(t => (decimal)t.Monto);
+                if(totalRetiros > 1000000)
+                {
+                    var clienteInfo = new
+                    {
+                        cliente?.Id,
+                        cliente?.Nombre,
+                        cliente?.Apellido,
+                        TotalRetiros = totalRetiros
+                    };
+                    clientes.Add(clienteInfo);
+                }
+            }
+           return Json(clientes);
+     }
 
     }
 }
